@@ -17,7 +17,7 @@ body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,R
 h1{margin:0;font-size:clamp(24px,3vw,38px)}
 .sub{color:var(--muted);margin-top:5px}
 .badge{padding:10px 14px;background:#ede7f7;border:1px solid #d7c7ef;border-radius:14px;font-weight:800;color:var(--accent)}
-.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:16px 0}
 .card{background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 28px rgba(42,53,77,.08)}
 .kpi{padding:16px}
 .kpi .label{color:var(--muted);font-size:13px}
@@ -70,6 +70,7 @@ td.desc{max-width:440px;white-space:normal;min-width:260px}
     <div class="card kpi"><div class="label">TOTAL ORDERS</div><div class="value" id="kTotal">0</div></div>
     <div class="card kpi"><div class="label">TECO</div><div class="value" id="kTeco">0</div></div>
     <div class="card kpi"><div class="label">REL</div><div class="value" id="kRel">0</div></div>
+    <div class="card kpi"><div class="label">REMAINING</div><div class="value" id="kRemaining">0</div></div>
     <div class="card kpi"><div class="label">MATCHED</div><div class="value" id="kMatched">0</div></div>
   </div>
 
@@ -193,9 +194,12 @@ function render(){
 
   const teco = rows.filter(r=>statusIdx>=0 && String(r[statusIdx])==='TECO').length;
   const rel  = rows.filter(r=>statusIdx>=0 && String(r[statusIdx])==='REL').length;
+  const remainingStatuses = new Set(['Wait LB-B TECO','Wait LAE Sign','Wait MECH. Sign']);
+  const remaining = rows.filter(r=>statusIdx>=0 && remainingStatuses.has(String(r[statusIdx]))).length;
   $('kTotal').textContent = rows.length.toLocaleString();
   $('kTeco').textContent = teco.toLocaleString();
   $('kRel').textContent = rel.toLocaleString();
+  $('kRemaining').textContent = remaining.toLocaleString();
   $('kMatched').textContent = f.length.toLocaleString();
   $('summary').textContent = `Showing ${f.length?start+1:0}–${Math.min(start+PAGE_SIZE,f.length)} of ${f.length.toLocaleString()} matched orders`;
   $('pageInfo').textContent = `Page ${page} / ${totalPages}`;
